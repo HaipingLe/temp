@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="renderer" content="webkit">
-		<title>林安物流集团2017年年会抽奖系统</title>
+		<title>JPCC2018年年会抽奖系统</title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link rel="stylesheet" type="text/css" href="css/mui.css" />
 		<link rel="stylesheet" href="css/index.css" />
@@ -19,70 +19,92 @@
 					</ul>
 				</div>
 				<p class="start"><img src="images/prize_start.png" alt=""></p>
+				<p class="prize_picture"><img src="images/Lucky.png" alt=""></p>
 				<ul class="prize_set">
 					<li class="set_grade">奖励等级
 						<select id="set_grade">
 							<option>选择奖等</option>
-							<!--<option>特等奖</option>-->
+							<option>三等奖_1</option>
+							<option>三等奖_2</option>
+							<option>二等奖_1</option>
+							<option>二等奖_2</option>
+							<option>二等奖_3</option>
 							<option>一等奖</option>
-							<option>二等奖</option>
-							<option>三等奖</option>
-							<option>四等奖</option>
-							<option>五等奖</option>
+							<option>特等奖</option>
 						</select>
 					</li>
 					<li class="set_people" style="">人数<input type="tel" placeholder="输入中奖人数" value="1" id="prizeCount"></li>
-					<li class="set_money" style="display: none;">金额<input type="tel" placeholder="输入中奖金额" value="10000" id="prizeMoney"></li>
+					<!--<li class="set_money" style="display: none;">金额<input type="tel" placeholder="输入中奖金额" value="10000" id="prizeMoney"></li> -->
 				</ul>
 			</div>
 		</div>
 		<input type="hidden" value="0" id="prize_btn">
 		<div class="luck_name">
-			<!--<img style="width: 100%; height: 100%;" src="images/bg_luck.png" />-->
+			<!-- <img style="width: 100%; height: 100%;" src="images/bg_luck.png" /> -->
 			<ul class="winnerName" style="list-style-type: none;"></ul>
 		</div>
 		<!--二维码-->
-		<div class="QR_code">
+		<!-- <div class="QR_code">
 			<table >
 				<tr><th><img src="images/logo.jpg"/></th><th><img src="images/logo.jpg"/></th></tr>
 			</table>
-		</div>
+		</div> -->
 		<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="js/luckName-Config.js" ></script>
 		<script type="text/javascript" src="js/jquery-3.2.1.min.js" ></script>
 		<script type="text/javascript" src="js/rem.js" ></script>
 		<script type="text/javascript">
 			mui.init();
-
-			var myNumber;
-			var arr = [];
-			//所有滚动名单
-			var code = ALL_PlayerName;
 			
+			//print debug info
+		    console.log(JpccList);
+			
+			//clear local data
+			cleareLocalCashData();
+
+			//测试随机数
+			var luck_number = Math.floor(Math.random()*100);
+			console.log(luck_number);
+
+			//所有员工数组，用来在屏幕滚动。
+			var code = AllName;
+			
+			//各类中奖名单，用来保存中奖人员
+			var  specialPrizeNameArr = new Array();//特等奖中奖名单
 			var  firstPrizeNameArr = new Array();//一等奖中奖名单
-			var  secondPrizeNameArr = new Array();//二等奖中奖名单
-			var  thirdPrizeNameArr = new Array();//三等奖中奖名单
-			var  fourthPrizeNameArr = new Array();//四等奖中奖名单
-			var  fifthPrizeNameArr = new Array();//五等奖中奖名单
+			var  secondPrizeNameArr1 = new Array();//二等奖_1中奖名单
+			var  secondPrizeNameArr2 = new Array();//二等奖_2中奖名单
+			var  secondPrizeNameArr3 = new Array();//二等奖_3中奖名单
+			var  thirdPrizeNameArr1 = new Array();//三等奖_1中奖名单
+			var  thirdPrizeNameArr2 = new Array();//三等奖_2中奖名单
 			
 			//查看本地是否有记录，有的话显示在中奖名单上
-			checkLuckNameOfLocal();
+			//checkLuckNameOfLocal();
 			
 			/*随机所有的中奖名单并且不重复*/
+			// function showRandomNum(num) {
+			// 	var li = "";
+			// 	for(var i = 0; i < code.length; i++) {
+			// 		arr[i] = i;
+			// 	}
+			// 	arr.sort(function() {
+			// 		return 0.5 - Math.random();
+			// 	});
+			// 	for(var i = 0; i < num; i++) {
+			// 		var index = arr[i];
+			// 		li += '<li>' + code[index] + '</li>';
+			// 	}
+			// 	$(".prize_list ul").html(li);
+			// }
+
+			//随机滚动
 			function showRandomNum(num) {
 				var li = "";
-				for(var i = 0; i < code.length; i++) {
-					arr[i] = i;
-				}
-				arr.sort(function() {
-					return 0.5 - Math.random();
-				});
-				for(var i = 0; i < num; i++) {
-					var index = arr[i];
-					li += '<li>' + code[index] + '</li>';
-				}
+				var index = Math.floor(Math.random()*AllName.length);
+			    li += '<li>' + AllName[index] + '</li>';
 				$(".prize_list ul").html(li);
 			}
+
 			//抽奖开始
 			$(function() {
 				$(".start").click(function() {
@@ -97,9 +119,11 @@
 								var num = 1;
 								$(this).find("img").attr("src", "images/prize_stop.png");
 								console.log('3333');
+
+								//此方法可以按照指定的周期执行来执行一段程序；周期是以毫秒为单位的
 								myNumber = setInterval(function() {
 									showRandomNum(num);
-								}, 40);
+								}, 80);
 								console.log('444');
 									$('#prizeCount').attr('readonly',true);
 									$('#set_grade').attr('disabled','disabled');
@@ -113,76 +137,115 @@
 						$('#set_grade').removeAttr('disabled');
 
 						$(this).find("img").attr("src", "images/prize_start.png");
-						//      这个地方设置中奖名单
-						var lucyName = '';//中奖名单
-						lucyName = chooseTheLuckPrizeName();
+						//这个地方设置中奖名单
+						var luckyName = '';//中奖人
+						luckyName = chooseTheLuckPrizeName();
+						
 						//大屏显示中奖名单
-						$(".prize_list ul li").text(lucyName);
+						$(".prize_list ul li").text(luckyName);
+						
 						//将中奖名单显示到中奖列表
-						var li = '<li class="NAME_lucy">'+ $("#set_grade").val() +":"+ lucyName +'</li>';
+						var li = '<li class="NAME_lucky">'+ $("#set_grade").val() +":"+ luckyName +'</li>';
 						$('.winnerName').prepend(li);
+						
 						//保存中奖名单到本地
-						saveLuckNameToLocal(lucyName);
+						saveLuckNameToLocal(luckyName);
 					}
 				});
-				//选择奖等
+				//设置抽奖选项
+				//JPCC 2018 年会，
 				$("#set_grade").change(function() {
 						$(".prize_grade span").text($(this).val());
 						if($("#set_grade").val() == "选择奖等") {
 							$(".prize_grade span").text('开始抽奖');
 							$(".prize_grade i").text('');
+							$(".prize_picture").find("img").attr("src", "images/Lucky.png");
+						}
+						if($("#set_grade").val() == "特等奖") {
+							$(".prize_grade i").text('Iphone X');
+							$('#prizeCount').val(1);
+							$(".prize_picture").find("img").attr("src", "images/IphoneX.png");
 						}
 						if($("#set_grade").val() == "一等奖") {
-							$(".prize_grade i").text('10000元');
-							$('#prizeCount').val(1);
-						}
-						if($("#set_grade").val() == "二等奖") {
-							$(".prize_grade i").text('5000元');
+							$(".prize_grade i").text('Ipad Pro');
 							$('#prizeCount').val(2);
+							$(".prize_picture").find("img").attr("src", "images/IpadPro.png");
 						}
-						if($("#set_grade").val() == "三等奖") {
-							$(".prize_grade i").text('3000元');
-							$('#prizeCount').val(3);
+						if($("#set_grade").val() == "二等奖_1") {
+							$(".prize_grade i").text('Beats Solo 无线耳机');
+							$('#prizeCount').val(1);
+							$(".prize_picture").find("img").attr("src", "images/Beats.png");
 						}
-						if($("#set_grade").val() == "四等奖") {
-							$(".prize_grade i").text('电磁炉');
-							$('#prizeCount').val(4);
+
+						if($("#set_grade").val() == "二等奖_2") {
+							$(".prize_grade i").text('Wii体感游戏机');
+							$('#prizeCount').val(1);
+							$(".prize_picture").find("img").attr("src", "images/Wii.png");
 						}
-						if($("#set_grade").val() == "五等奖") {
-							$(".prize_grade i").text('电炖盅');
-							$('#prizeCount').val(5);
+
+						if($("#set_grade").val() == "二等奖_3") {
+							$(".prize_grade i").text('XBox游戏主机');
+							$('#prizeCount').val(1);
+							$(".prize_picture").find("img").attr("src", "images/Xbox.png");
+						}
+
+						if($("#set_grade").val() == "三等奖_1") {
+							$(".prize_grade i").text('博朗负离子吹风机');
+							$('#prizeCount').val(2);
+							$(".prize_picture").find("img").attr("src", "images/Dryer.png");
+						}
+						if($("#set_grade").val() == "三等奖_2") {
+							$(".prize_grade i").text('Kinlde');
+							$('#prizeCount').val(2);
+							$(".prize_picture").find("img").attr("src", "images/Kindle.png");
 						}
 				});
 			});
 			
 			//判断奖励个数是否超过设定人数
 			function judgeTheLuckNum(){
-				var lucyNum = 0;
-				var lucyArr = new Array();
+				var luckyNum = 0;
+				var luckyArr = new Array();
 				var setNum = 0;//填写的中奖个数是否超过候选人员个数
+
+				if($("#set_grade").val() == "特等奖") {
+					luckyArr = localStorage.getItem('specialPrizeNameArr');
+					setNum = JpccList.length;
+				}
+
 				if ($("#set_grade").val() == "一等奖") {
-					lucyArr = localStorage.getItem('firstPrizeNameArr');
-					setNum = First_WaitWinNameList.length + firstPrizeNameArr.length;
+					luckyArr = localStorage.getItem('firstPrizeNameArr');
+					setNum = JpccList.length;
 				}
-				if($("#set_grade").val() == "二等奖") {
-					lucyArr = localStorage.getItem('secondPrizeNameArr');
-					setNum = Second_WaitWinNameList.length + secondPrizeNameArr.length;
+
+				if($("#set_grade").val() == "二等奖_1") {
+					luckyArr = localStorage.getItem('secondPrizeNameArr1');
+					setNum = JpccList.length;
 				}
-				if($("#set_grade").val() == "三等奖") {
-					lucyArr = localStorage.getItem('thirdPrizeNameArr');
-					setNum = Third_WaitWinNameList.length + thirdPrizeNameArr.length;
+
+				if($("#set_grade").val() == "二等奖_2") {
+					luckyArr = localStorage.getItem('secondPrizeNameArr2');
+					setNum = JpccList.length;
 				}
-				if($("#set_grade").val() == "四等奖") {
-					lucyArr = localStorage.getItem('fourthPrizeNameArr');
-					setNum = Fourth_WaitWinNameList.length + fourthPrizeNameArr.length;
+
+				if($("#set_grade").val() == "二等奖_3") {
+					luckyArr = localStorage.getItem('secondPrizeNameArr3');
+					setNum = JpccList.length;
 				}
-				if($("#set_grade").val() == "五等奖") {
-					lucyArr = localStorage.getItem('fifthPrizeNameArr');
-					setNum = Fifth_WaitWinNameList.length + fifthPrizeNameArr.length;
+
+				if($("#set_grade").val() == "三等奖_1") {
+					luckyArr = localStorage.getItem('thirdPrizeNameArr1');
+					setNum = AllName.length;
 				}
-				lucyNum = lucyArr ? lucyArr.split(',').length : 0;
+
+				if($("#set_grade").val() == "三等奖_2") {
+					luckyArr = localStorage.getItem('thirdPrizeNameArr2');
+					setNum = AllName.length;
+				}
+
+				luckyNum = luckyArr ? luckyArr.split(',').length : 0;
 				
-				if (lucyNum >= $("#prizeCount").val() || setNum < $("#prizeCount").val()) {
+				if (luckyNum >= $("#prizeCount").val() || setNum < $("#prizeCount").val()) {
 					mui.alert('奖励人数超过预定人数');
 					return false;
 				}else{
@@ -192,131 +255,114 @@
 			
 			//将中奖名单保存在本地
 			function saveLuckNameToLocal(luckName){
+				if($("#set_grade").val() == "特等奖") {
+					specialPrizeNameArr.push(luckName);
+					localStorage.setItem('specialPrizeNameArr',specialPrizeNameArr);
+				}
 				if ($("#set_grade").val() == "一等奖") {
 					firstPrizeNameArr.push(luckName);
 					localStorage.setItem('firstPrizeNameArr',firstPrizeNameArr);
 				}
-				if($("#set_grade").val() == "二等奖") {
-					secondPrizeNameArr.push(luckName);
-					localStorage.setItem('secondPrizeNameArr',secondPrizeNameArr);
+				if($("#set_grade").val() == "二等奖_1") {
+					secondPrizeNameArr1.push(luckName);
+					localStorage.setItem('secondPrizeNameArr1',secondPrizeNameArr1);
 				}
-				if($("#set_grade").val() == "三等奖") {
-					thirdPrizeNameArr.push(luckName);
-					localStorage.setItem('thirdPrizeNameArr',thirdPrizeNameArr);
+
+				if($("#set_grade").val() == "二等奖_2") {
+					secondPrizeNameArr2.push(luckName);
+					localStorage.setItem('secondPrizeNameArr2',secondPrizeNameArr2);
 				}
-				if($("#set_grade").val() == "四等奖") {
-					fourthPrizeNameArr.push(luckName);
-					localStorage.setItem('fourthPrizeNameArr',fourthPrizeNameArr);
+
+				if($("#set_grade").val() == "二等奖_3") {
+					secondPrizeNameArr3.push(luckName);
+					localStorage.setItem('secondPrizeNameArr3',secondPrizeNameArr3);
 				}
-				if($("#set_grade").val() == "五等奖") {
-					fifthPrizeNameArr.push(luckName);
-					localStorage.setItem('fifthPrizeNameArr',fifthPrizeNameArr);
+
+				if($("#set_grade").val() == "三等奖_1") {
+					thirdPrizeNameArr1.push(luckName);
+					localStorage.setItem('thirdPrizeNameArr1',thirdPrizeNameArr1);
 				}
+
+				if($("#set_grade").val() == "三等奖_2") {
+					thirdPrizeNameArr2.push(luckName);
+					localStorage.setItem('thirdPrizeNameArr2',thirdPrizeNameArr2);
+				}
+				
 			};
 			
-			//查看本地是否有记录，有的话显示在中奖名单上
-			function checkLuckNameOfLocal(){
-				var first = localStorage.getItem('firstPrizeNameArr');
-				var second = localStorage.getItem('secondPrizeNameArr');
-				var third = localStorage.getItem('thirdPrizeNameArr');
-				var four = localStorage.getItem('fourthPrizeNameArr');
-				var fifth = localStorage.getItem('fifthPrizeNameArr');
-				
-				var localArr = new Array();
-				
-				if (first) {
-					addLuckList(first.split(','),'一等奖');
-					//从候选名单中删除
-					for (var index in first.split(',')) {
-						var Name = first.split(',')[index];
-						First_WaitWinNameList.splice(First_WaitWinNameList.indexOf(Name),1);
-						firstPrizeNameArr.push(Name);
-					}
-				}
-				if (second) {
-					addLuckList(second.split(','),'二等奖');
-					//从候选名单中删除
-					for (var index in second.split(',')) {
-						var Name = second.split(',')[index];
-						Second_WaitWinNameList.splice(Second_WaitWinNameList.indexOf(Name),1);
-						secondPrizeNameArr.push(Name);
-					}
-				}
-				if (third) {
-					addLuckList(third.split(','),'三等奖');
-					//从候选名单中删除
-					for (var index in third.split(',')) {
-						var Name = third.split(',')[index];
-						Third_WaitWinNameList.splice(Third_WaitWinNameList.indexOf(Name),1);
-						thirdPrizeNameArr.push(Name);
-					}
-				}
-				if (four) {
-					addLuckList(four.split(','),'四等奖');
-					//从候选名单中删除
-					for (var index in four.split(',')) {
-						var Name = four.split(',')[index];
-						Fourth_WaitWinNameList.splice(Fourth_WaitWinNameList.indexOf(Name),1);
-						fourthPrizeNameArr.push(Name);
-					}
-				}
-				if (fifth) {
-					addLuckList(fifth.split(','),'五等奖');
-					//从候选名单中删除
-					for (var index in fifth.split(',')) {
-						var Name = fifth.split(',')[index];
-						Fifth_WaitWinNameList.splice(Fifth_WaitWinNameList.indexOf(Name),1);
-						fifthPrizeNameArr.push(Name);
-					}
-				}
-				
-			};
+			
+
 			//添加到中奖名单
 			function addLuckList(nameArr,dengji){
 				for(var index in nameArr){
-					var li = '<li class="NAME_lucy">'+ dengji + ':' +nameArr[index] +'</li>';
+					var li = '<li class="NAME_lucky">'+ dengji + ':' +nameArr[index] +'</li>';
 					$(".winnerName").append(li);
 				};
-				//从候选名单中删除
-				
 			};
 			
-			//清除本地测试数据
-//			function cleareLocalCashData(){
-//				localStorage.setItem('firstPrizeNameArr',new Array());
-//				localStorage.setItem('secondPrizeNameArr',new Array());
-//				localStorage.setItem('thirdPrizeNameArr',new Array());
-//				localStorage.setItem('fourthPrizeNameArr',new Array());
-//				localStorage.setItem('fifthPrizeNameArr',new Array());
-//			}
+			//清除本地存储数据
+			function cleareLocalCashData(){
+				localStorage.setItem('specialPrizeNameArr',new Array());
+				localStorage.setItem('firstPrizeNameArr',new Array());
+				localStorage.setItem('secondPrizeNameArr1',new Array());
+				localStorage.setItem('secondPrizeNameArr2',new Array());
+				localStorage.setItem('secondPrizeNameArr3',new Array());
+				localStorage.setItem('thirdPrizeNameArr1',new Array());
+				localStorage.setItem('thirdPrizeNameArr2',new Array());
+			}
 			
-			//筛选不同等级的中奖名单，返回中奖名单
+			//筛选不同等级的中奖名单，返回中奖名单,并且将中奖者从名单中删除
+			/*
+			                <option>选择奖等</option>
+							<option>三等奖_1</option>
+							<option>三等奖_2</option>
+							<option>二等奖_1</option>
+							<option>二等奖_2</option>
+							<option>二等奖_3</option>
+							<option>一等奖</option>
+							<option>特等奖</option>
+			*/
 			function chooseTheLuckPrizeName(){
-				var luckPrizeName = '';
+				var luckyDog = '';
 				
 				if ($("#set_grade").val() == "一等奖") {
-					luckPrizeName = luckOne(First_WaitWinNameList);
-					First_WaitWinNameList.splice(First_WaitWinNameList.indexOf(luckPrizeName),1);
-				} else if ($("#set_grade").val() == "二等奖"){
-					luckPrizeName = luckOne(Second_WaitWinNameList);
-					Second_WaitWinNameList.splice(Second_WaitWinNameList.indexOf(luckPrizeName),1);
-				} else if ($("#set_grade").val() == "三等奖"){
-					luckPrizeName = luckOne(Third_WaitWinNameList);
-					Third_WaitWinNameList.splice(Third_WaitWinNameList.indexOf(luckPrizeName),1);
-				} else if ($("#set_grade").val() == "四等奖"){
-					luckPrizeName = luckOne(Fourth_WaitWinNameList);
-					Fourth_WaitWinNameList.splice(Fourth_WaitWinNameList.indexOf(luckPrizeName),1);
-				} else if ($("#set_grade").val() == "五等奖"){
-					luckPrizeName = luckOne(Fifth_WaitWinNameList);
-					Fifth_WaitWinNameList.splice(Fifth_WaitWinNameList.indexOf(luckPrizeName),1);
+					//一等奖从JpccList中抽取
+					luckyDog = luckOne(JpccList);
+					//将中奖者从JpccList和AllName中删除
+					JpccList.splice(JpccList.indexOf(luckyDog),1);
+					AllName.splice(AllName.indexOf(luckyDog),1);
+				} else if ($("#set_grade").val() == "二等奖_1" || $("#set_grade").val() == "二等奖_2"|| $("#set_grade").val() == "二等奖_3"){
+					//二等奖从Jpcc名单里抽取
+					luckyDog = luckOne(JpccList);
+					JpccList.splice(JpccList.indexOf(luckyDog),1);
+					AllName.splice(AllName.indexOf(luckyDog),1);
+				} else if ($("#set_grade").val() == "三等奖_1" || $("#set_grade").val() == "三等奖_2"){
+					//三等奖从所有人中抽取
+					luckyDog = luckOne(AllName);
+					AllName.splice(AllName.indexOf(luckyDog),1);
+					
+					//如果三等奖来自Jpcc名单，需要同时将中奖者从Jpcc名单中删除
+					if(JpccList.indexOf(luckyDog) >= 0 ){
+						JpccList.splice(JpccList.indexOf(luckyDog),1);
+					}
+				} else if ($("#set_grade").val() == "特等奖"){
+					//特等奖从Jpcc名单中抽取
+					luckyDog = luckOne(JpccList);
+					JpccList.splice(JpccList.indexOf(luckyDog),1);
+					AllName.splice(AllName.indexOf(luckyDog),1);
 				}
-				return luckPrizeName;
+				return luckyDog;
 			}
-			//随机抽取一个中奖名单
+			
+			//随机抽取一个中奖名字
 			function luckOne(listArr){
+				
+				//排序
 				listArr.sort(function() {
 					return 0.5 - Math.random();
 				});
+
+				//随机数作为索引，从而取出数组元素
 				var luck = listArr[Math.floor(Math.random()*listArr.length)];
 				return luck;
 			}
