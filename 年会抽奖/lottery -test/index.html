@@ -100,8 +100,10 @@
 			//随机滚动
 			function showRandomNum(num) {
 				var li = "";
-				var index = Math.floor(Math.random()*AllName.length);
-			    li += '<li>' + AllName[index] + '</li>';
+				var index1 = Math.floor(Math.random()*AllName.length);
+				var index2 = Math.floor(Math.random()*AllName.length);
+				var index3 = Math.floor(Math.random()*AllName.length);
+			    li += '<li>' + AllName[index1] +'</br>'+AllName[index2]+'</br>'+AllName[index3]+'</li>';
 				$(".prize_list ul").html(li);
 			}
 
@@ -130,13 +132,14 @@
 								}
 						}
 					} else {//暂停
+					console.log($('#prizeCount').val());
+					if($('#prizeCount').val() ==1){
 						$("#prize_btn").val(0);
 						clearInterval(myNumber);
-
 						$('#prizeCount').attr('readonly',false);
 						$('#set_grade').removeAttr('disabled');
-
 						$(this).find("img").attr("src", "images/prize_start.png");
+						
 						//这个地方设置中奖名单
 						var luckyName = '';//中奖人
 						luckyName = chooseTheLuckPrizeName();
@@ -150,6 +153,39 @@
 						
 						//保存中奖名单到本地
 						saveLuckNameToLocal(luckyName);
+						}
+
+						if($('#prizeCount').val() ==2){
+							$("#prize_btn").val(0);
+							clearInterval(myNumber);
+							$('#prizeCount').attr('readonly',false);
+							$('#set_grade').removeAttr('disabled');
+							$(this).find("img").attr("src", "images/prize_start.png");
+
+							//这个地方设置中奖名单
+							var luckyName1 = '';//中奖人
+						    var luckyName2 = '';
+						    luckyName1 = chooseTheLuckPrizeName();
+							luckyName2 = chooseTheLuckPrizeName();
+							while(luckyName1 == luckyName2){
+								luckyName2 = chooseTheLuckPrizeName();
+							}
+						    
+						
+						    //大屏显示中奖名单
+							li += '<li>' + luckyName1 +'</br>'+luckyName2+'</li>';
+				            $(".prize_list ul").html(li);
+						    //$(".prize_list ul li").text(luckyName1);
+						
+						    //将中奖名单显示到中奖列表
+						    var li = '<li class="NAME_lucky">'+ $("#set_grade").val() +":"+ luckyName1+'</br>'+ $("#set_grade").val() +":"+ luckyName2 +'</li>';
+						    $('.winnerName').prepend(li);
+						  
+						    //保存中奖名单到本地
+						    saveLuckNameToLocal(luckyName1);
+							saveLuckNameToLocal(luckyName2);
+
+						}
 					}
 				});
 				//设置抽奖选项
@@ -164,17 +200,17 @@
 						if($("#set_grade").val() == "特等奖") {
 							$(".prize_grade i").text('Iphone X');
 							$('#prizeCount').val(1);
-							$(".prize_picture").find("img").attr("src", "images/IphoneX.jpg");
+							$(".prize_picture").find("img").attr("src", "images/IphoneX.png");
 						}
 						if($("#set_grade").val() == "一等奖") {
 							$(".prize_grade i").text('Ipad Pro');
 							$('#prizeCount').val(2);
-							$(".prize_picture").find("img").attr("src", "images/IpadPro.jpg");
+							$(".prize_picture").find("img").attr("src", "images/IpadPro.png");
 						}
 						if($("#set_grade").val() == "二等奖_1") {
 							$(".prize_grade i").text('Beats Solo 无线耳机');
 							$('#prizeCount').val(1);
-							$(".prize_picture").find("img").attr("src", "images/Beats.jpg");
+							$(".prize_picture").find("img").attr("src", "images/Beats.png");
 						}
 
 						if($("#set_grade").val() == "二等奖_2") {
@@ -186,7 +222,7 @@
 						if($("#set_grade").val() == "二等奖_3") {
 							$(".prize_grade i").text('XBox游戏主机');
 							$('#prizeCount').val(1);
-							$(".prize_picture").find("img").attr("src", "images/Xbox.jpg");
+							$(".prize_picture").find("img").attr("src", "images/Xbox.png");
 						}
 
 						if($("#set_grade").val() == "三等奖_1") {
@@ -329,27 +365,39 @@
 					//一等奖从JpccList中抽取
 					luckyDog = luckOne(JpccList);
 					//将中奖者从JpccList和AllName中删除
-					JpccList.splice(JpccList.indexOf(luckyDog),1);
-					AllName.splice(AllName.indexOf(luckyDog),1);
+					if(JpccList.indexOf(luckyDog) >= 0 && AllName.indexOf(luckyDog) >= 0){
+					    JpccList.splice(JpccList.indexOf(luckyDog),1);
+					    AllName.splice(AllName.indexOf(luckyDog),1);
+					}
+					
 				} else if ($("#set_grade").val() == "二等奖_1" || $("#set_grade").val() == "二等奖_2"|| $("#set_grade").val() == "二等奖_3"){
 					//二等奖从Jpcc名单里抽取
 					luckyDog = luckOne(JpccList);
-					JpccList.splice(JpccList.indexOf(luckyDog),1);
-					AllName.splice(AllName.indexOf(luckyDog),1);
+					//将中奖者从JpccList和AllName中删除
+					if(JpccList.indexOf(luckyDog) >= 0 && AllName.indexOf(luckyDog) >= 0){
+					    JpccList.splice(JpccList.indexOf(luckyDog),1);
+					    AllName.splice(AllName.indexOf(luckyDog),1);
+					}
 				} else if ($("#set_grade").val() == "三等奖_1" || $("#set_grade").val() == "三等奖_2"){
 					//三等奖从所有人中抽取
 					luckyDog = luckOne(AllName);
-					AllName.splice(AllName.indexOf(luckyDog),1);
-					
+					//将中奖者AllName中删除
+					if(AllName.indexOf(luckyDog) >= 0){
+						AllName.splice(AllName.indexOf(luckyDog),1);
+					}
 					//如果三等奖来自Jpcc名单，需要同时将中奖者从Jpcc名单中删除
 					if(JpccList.indexOf(luckyDog) >= 0 ){
+						
 						JpccList.splice(JpccList.indexOf(luckyDog),1);
 					}
 				} else if ($("#set_grade").val() == "特等奖"){
 					//特等奖从Jpcc名单中抽取
 					luckyDog = luckOne(JpccList);
-					JpccList.splice(JpccList.indexOf(luckyDog),1);
-					AllName.splice(AllName.indexOf(luckyDog),1);
+					//将中奖者从JpccList和AllName中删除
+					if(JpccList.indexOf(luckyDog) >= 0 && AllName.indexOf(luckyDog) >= 0){
+					    JpccList.splice(JpccList.indexOf(luckyDog),1);
+					    AllName.splice(AllName.indexOf(luckyDog),1);
+					}
 				}
 				return luckyDog;
 			}
