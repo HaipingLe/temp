@@ -1,0 +1,22 @@
+<!--
+Tests testgen.pl
+
+Usage: after changes to the script, manually review the results
+and commit reference versions.
+-->
+   
+<author>s.pietschmann@technisat.de</author>
+<!-- Test that enum sets are unique -->
+<test type="unique" output="unique" name="unique">
+   <root>../src</root>
+   <input>tsd/communication/event/EventMasksAdm.hpp</input>
+   <unique prefix="TSDEVENTID_ADM_" />
+</test>
+
+<!-- Test that enum sets are within range -->
+<test type="range" output="range" name="range">
+   <root>../src</root>
+   <input>tsd/communication/event/EventMasksAdm.hpp</input>
+   <range prefix="TSDEVENTID_ADM_" min="0x01000000" max="0x01FFFFFF" />
+</test>
+      

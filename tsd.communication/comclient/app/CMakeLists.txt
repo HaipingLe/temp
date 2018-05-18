@@ -1,0 +1,7 @@
+ADD_SUBDIRECTORY(naviclient)
+ADD_SUBDIRECTORY(stresstest)
+ADD_SUBDIRECTORY(stresstest2)
+ADD_SUBDIRECTORY(testapp)
+ADD_SUBDIRECTORY(getQueueStressTest)
+
+

@@ -1,0 +1,2 @@
+FILE (GLOB_RECURSE SOURCES *.[c,h]pp)
+BUILD_APP(stresstest ${SOURCES})

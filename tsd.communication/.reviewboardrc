@@ -1,0 +1,6 @@
+REVIEWBOARD_URL = "https://reviewboard.mib3.technisat-digital/reviewboard"
+REPOSITORY = "tsd.communication"
+BRANCH = "develop"
+PARENT_BRANCH = "origin/develop"
+TRACKING_BRANCH = "origin/develop"
+LAND_DEST_BRANCH = "develop"

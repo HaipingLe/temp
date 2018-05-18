@@ -1,0 +1,3 @@
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(test/unique)
+ADD_SUBDIRECTORY(test/range)
